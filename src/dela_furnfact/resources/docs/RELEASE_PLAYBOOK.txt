@@ -1,0 +1,26 @@
+RELEASE PLAYBOOK
+
+Goal
+Publish a clean GitHub repository and create a first usable Windows build.
+
+Pre-release checks
+1. Run pytest.
+2. Run furnfact demo --content books.
+3. Run furnfact demo --content dvd.
+4. Run furnfact doctor.
+5. If Blender is installed, run visual and manufacturing renders from the examples.
+
+Windows packaging
+1. Use a real Windows machine.
+2. Install Python 3.11 or 3.12.
+3. Create a virtual environment.
+4. Install: pip install -e .[desktop,build,dev]
+5. Run pytest.
+6. Run: pyinstaller --clean dela-furnfact.spec
+7. Test the generated exe.
+
+GitHub release
+1. Push main.
+2. Create tag v0.4.0.
+3. Create a release using RELEASE_NOTES_v0.4.0.md.
+4. Upload the Windows build zip.

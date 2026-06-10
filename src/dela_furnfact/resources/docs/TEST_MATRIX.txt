@@ -1,0 +1,19 @@
+TEST MATRIX
+
+Automated
+- pytest unit and smoke tests
+- bundle generation
+- JSON load/save
+- Blender compatibility checks
+- CLI smoke commands
+
+Manual on Windows
+- GUI startup
+- PyInstaller executable startup
+- docs opening from packaged app
+- render output directory creation
+
+Manual with Blender installed
+- visual render
+- manufacturing render
+- full render batch

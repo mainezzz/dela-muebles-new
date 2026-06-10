@@ -1,0 +1,65 @@
+# Blender legacy
+
+## Qué es
+
+`dela-furnfact` puede seguir usando los scripts heredados de Blender para:
+- render visual
+- render técnico de fabricación
+
+Esa integración vive en `src/dela_furnfact/blender_adapter.py`.
+
+## Qué se valida antes de renderizar
+
+El bridge no lanza Blender a ciegas.
+Antes genera un `LegacyCompatibilityReport`.
+
+Hay dos chequeos:
+- compatibilidad visual
+- compatibilidad de fabricación
+
+## Compatibilidad visual
+
+Soporta mejor:
+- 1 columna
+- 2 columnas
+- huecos mapeables a tipos legacy
+
+Los labels nuevos pueden mapearse a:
+- `books_small`
+- `books_large`
+- `books_standard`
+- `books_general`
+- `dvds`
+- `dvd_boxsets`
+
+## Compatibilidad de fabricación
+
+El pipeline heredado de fabricación sigue ligado a la topología clásica:
+- 2 columnas
+- divisor central
+- trasera partida
+- layout simétrico de estantería
+
+Si el proyecto no encaja, se bloquea el render de fabricación legacy.
+
+## Archivos legacy conservados
+
+- `legacy/blender/generate_bookshelf.py`
+- `legacy/blender/generate_kerf_layout.py`
+- `legacy/scripts/kerf_estanteria_dvds.py`
+- `legacy/scripts/kerf_estanteria_libros_4_4.py`
+- `legacy/scripts/kerf_estanteria_libros_5_3.py`
+
+## Cuándo usar Blender legacy
+
+Úsalo cuando quieras:
+- render rápido reutilizando lo existente
+- comprobar continuidad con el proyecto anterior
+- mantener outputs conocidos
+
+## Cuándo no usarlo como núcleo
+
+No debe ser el motor principal para:
+- definir la lógica del mueble
+- decidir topologías nuevas
+- modelar casos que el legado no soporta

@@ -1,0 +1,50 @@
+{
+  "name": "Biblioteca DELA",
+  "width_mm": 1636.0,
+  "height_mm": 2000.0,
+  "depth_mm": 300.0,
+  "board_thickness_mm": 18.0,
+  "back_panel_thickness_mm": 5.0,
+  "content_type": "books",
+  "content_quantity": 220,
+  "layout_mode": "balanced",
+  "remaining_distribution": "uniform",
+  "has_back_panel": true,
+  "split_back_panel": true,
+  "has_center_divider": true,
+  "kerf_mm": 3.0,
+  "units": "mm",
+  "fixed_columns": 2,
+  "requested_openings": [
+    {
+      "label": "books_large",
+      "count": 1,
+      "min_clear_height_mm": 249.0,
+      "preferred_clear_height_mm": 249.0
+    },
+    {
+      "label": "books_small",
+      "count": 2,
+      "min_clear_height_mm": 210.0,
+      "preferred_clear_height_mm": 210.0
+    },
+    {
+      "label": "books_large",
+      "count": 2,
+      "min_clear_height_mm": 249.0,
+      "preferred_clear_height_mm": 249.0
+    },
+    {
+      "label": "books_small",
+      "count": 2,
+      "min_clear_height_mm": 211.0,
+      "preferred_clear_height_mm": 211.0
+    },
+    {
+      "label": "books_large",
+      "count": 1,
+      "min_clear_height_mm": 249.0,
+      "preferred_clear_height_mm": 249.0
+    }
+  ]
+}

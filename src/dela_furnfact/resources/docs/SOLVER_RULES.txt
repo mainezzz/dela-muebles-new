@@ -1,0 +1,76 @@
+Reglas del solver
+
+#Prioridad
+
+La prioridad se interpreta así:
+- `1`: máxima prioridad
+- `5`: mínima prioridad
+
+Cuando no caben todas las alturas preferidas:
+- el solver reduce antes los huecos de prioridad alta numérica
+- intenta preservar primero `priority=1`, luego `2`, etc.
+
+#`fixed_height`
+
+Si `fixed_height` es `true`:
+- el hueco exige una altura fija efectiva
+- normalmente debe venir acompañada de `preferred_clear_height_mm`
+- el solver intenta mantener esa altura exacta
+
+Si la geometría no lo permite:
+- el request puede fallar
+- o el candidato se descarta
+
+#`max_clear_height_mm`
+
+Limita el crecimiento del hueco.
+Se usa sobre todo cuando:
+- quieres que un hueco no absorba todo el sobrante
+- quieres mantener una estética o uso concreto
+
+#`allow_auto_fill`
+
+Si es `true`:
+- el solver puede crear huecos automáticos cuando faltan huecos para completar filas x columnas
+
+Si es `false`:
+- el número de huecos pedidos debe cuadrar con la topología resuelta o con las restricciones fijas
+
+#`fixed_columns` y `fixed_rows`
+
+- bloquean el espacio de búsqueda del solver
+- hacen la solución más predecible
+- también aumentan el riesgo de incompatibilidad si el usuario pide algo que no cabe
+
+#`remaining_distribution`
+
+Controla cómo se reparte el sobrante una vez respetados mínimos y objetivos:
+- `uniform`: reparte homogéneamente
+- `top_bottom_large`: favorece extremos
+- `largest_openings`: empuja más a los huecos mayores
+- `none`: no reparte sobrante adicional
+
+#Casos típicos
+
+##Biblioteca con hueco protagonista
+- un hueco grande fijo para arte o atlas
+- varios huecos flexibles para novela
+- prioridad alta en el hueco protagonista
+
+##DVD denso
+- muchas filas
+- alturas bajas
+- layout mode `dense`
+
+##Mixto con reglas del usuario
+- unas filas fijas
+- otras automáticas
+- alturas máximas para controlar crecimiento
+
+#Qué no hace todavía
+
+El solver actual no intenta:
+- optimización multiobjetivo avanzada
+- coste económico real
+- deformación estructural detallada por carga
+- CNC/toolpath

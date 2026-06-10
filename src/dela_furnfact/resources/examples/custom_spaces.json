@@ -1,0 +1,49 @@
+{
+  "name": "Estantería personalizada",
+  "width_mm": 1800.0,
+  "height_mm": 2200.0,
+  "depth_mm": 320.0,
+  "board_thickness_mm": 18.0,
+  "back_panel_thickness_mm": 5.0,
+  "content_type": "books",
+  "content_quantity": 260,
+  "layout_mode": "balanced",
+  "remaining_distribution": "uniform",
+  "has_back_panel": true,
+  "split_back_panel": true,
+  "has_center_divider": false,
+  "kerf_mm": 3.0,
+  "units": "mm",
+  "allow_auto_fill": true,
+  "requested_openings": [
+    {
+      "label": "arte_grande",
+      "count": 1,
+      "min_clear_height_mm": 360.0,
+      "preferred_clear_height_mm": 390.0,
+      "min_clear_width_mm": 420.0,
+      "fixed_height": true,
+      "priority": 1,
+      "max_clear_height_mm": 390.0
+    },
+    {
+      "label": "novela",
+      "count": 3,
+      "min_clear_height_mm": 240.0,
+      "preferred_clear_height_mm": 255.0,
+      "min_clear_width_mm": 260.0,
+      "priority": 3,
+      "max_clear_height_mm": 270.0
+    },
+    {
+      "label": "revistero",
+      "count": 1,
+      "min_clear_height_mm": 300.0,
+      "preferred_clear_height_mm": 320.0,
+      "min_clear_width_mm": 360.0,
+      "priority": 2,
+      "fixed_height": false,
+      "max_clear_height_mm": 340.0
+    }
+  ]
+}

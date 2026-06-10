@@ -1,0 +1,101 @@
+Formato del request JSON
+
+#Estructura general
+
+```json
+{
+  "name": "Proyecto DELA",
+  "width_mm": 1800,
+  "height_mm": 2200,
+  "depth_mm": 320,
+  "board_thickness_mm": 18,
+  "back_panel_thickness_mm": 5,
+  "content_type": "books",
+  "content_quantity": 240,
+  "layout_mode": "balanced",
+  "remaining_distribution": "uniform",
+  "has_back_panel": true,
+  "split_back_panel": true,
+  "has_center_divider": true,
+  "kerf_mm": 3,
+  "units": "mm",
+  "fixed_columns": 2,
+  "fixed_rows": null,
+  "allow_auto_fill": true,
+  "requested_openings": []
+}
+```
+
+#Campos de raíz
+
+- `name`: nombre del proyecto.
+- `width_mm`: ancho exterior total.
+- `height_mm`: alto exterior total.
+- `depth_mm`: fondo exterior total.
+- `board_thickness_mm`: grosor del tablero principal.
+- `back_panel_thickness_mm`: grosor de la trasera.
+- `content_type`: `books` o `dvd`.
+- `content_quantity`: cantidad objetivo aproximada.
+- `layout_mode`: `auto`, `balanced`, `dense`.
+- `remaining_distribution`: `auto`, `uniform`, `top_bottom_large`, `largest_openings`, `none`.
+- `has_back_panel`: incluye trasera.
+- `split_back_panel`: parte la trasera.
+- `has_center_divider`: permite divisor central.
+- `kerf_mm`: pérdida de corte.
+- `units`: actualmente solo `mm`.
+- `fixed_columns`: bloquea número de columnas.
+- `fixed_rows`: bloquea número de filas.
+- `allow_auto_fill`: deja al solver completar huecos faltantes.
+- `requested_openings`: lista de huecos específicos.
+
+#Campos de `requested_openings`
+
+- `label`: nombre del hueco.
+- `count`: cuántas veces se repite.
+- `min_clear_height_mm`: altura útil mínima obligatoria.
+- `preferred_clear_height_mm`: altura objetivo preferida.
+- `max_clear_height_mm`: altura útil máxima opcional.
+- `min_clear_width_mm`: anchura útil mínima.
+- `priority`: `1` más importante, `5` menos importante.
+- `fixed_height`: si es `true`, el solver trata esa altura como fija.
+
+#Interpretación práctica
+
+##Caso 1: hueco flexible
+```json
+{
+  "label": "novela",
+  "count": 4,
+  "min_clear_height_mm": 230,
+  "preferred_clear_height_mm": 255,
+  "max_clear_height_mm": 270,
+  "priority": 4,
+  "fixed_height": false
+}
+```
+
+##Caso 2: hueco fijo
+```json
+{
+  "label": "arte_grande",
+  "count": 1,
+  "min_clear_height_mm": 360,
+  "preferred_clear_height_mm": 390,
+  "max_clear_height_mm": 390,
+  "priority": 1,
+  "fixed_height": true
+}
+```
+
+#Recomendaciones
+
+- usa `preferred_clear_height_mm` siempre que quieras guiar al solver
+- usa `fixed_height` solo para huecos realmente rígidos
+- usa `fixed_columns` y `fixed_rows` solo cuando necesites bloquear la solución
+- si el usuario no define todos los huecos, deja `allow_auto_fill = true`
+
+#Ejemplos
+
+- `examples/books_balanced.json`
+- `examples/dvd_dense.json`
+- `examples/custom_spaces.json`

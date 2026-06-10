@@ -1,0 +1,807 @@
+DELA FurnFact - Combined Documentation Pack
+
+================================================================================
+
+FILE: README.txt
+
+================================================================================
+
+dela-furnfact
+===============
+
+dela-furnfact es el repositorio final del producto DELA: un configurador de
+estanterías que transforma medidas + tipo de contenido + reglas de huecos en
+una solución fabricable, con despiece, layout de corte con kerf, export JSON,
+GUI PySide6 e integración opcional con Blender legacy.
+
+QUE HACE
+--------
+El usuario define:
+- ancho, alto y fondo
+- grosor de tablero y trasera
+- tipo de contenido: books o dvd
+- cantidad estimada
+- modo de layout
+- reparto de altura sobrante
+- restricciones opcionales
+- huecos con:
+  - label
+  - count
+  - min_clear_height_mm
+  - preferred_clear_height_mm
+  - max_clear_height_mm
+  - min_clear_width_mm
+  - priority
+  - fixed_height
+
+El sistema devuelve:
+- propuesta geométrica válida
+- huecos resueltos
+- capacidad estimada
+- piezas de fabricación
+- tableros y layout con kerf
+- bundle JSON
+- payloads para Blender legacy
+- GUI y CLI
+
+ESTADO
+------
+Fase 1 cerrada:
+- puente real con Blender legacy
+
+Fase 2 cerrada:
+- solver con huecos fijos, máximos y prioridades
+
+Fase 3 cerrada:
+- documentación técnica completa
+- formato JSON documentado
+- ayuda integrada en CLI y GUI
+- repo preparado para GitHub
+
+DOCUMENTACION PRINCIPAL
+-----------------------
+- ARCHITECTURE.md
+- docs/TECHNICAL_GUIDE.md
+- docs/REQUEST_FORMAT.md
+- docs/SOLVER_RULES.md
+- docs/BLENDER_LEGACY.md
+- docs/kerf.md
+- docs/PROJECT_STATUS.md
+- docs/GITHUB_PUBLISH.md
+
+Versiones en texto plano:
+- README.txt
+- docs/REQUEST_FORMAT.txt
+- docs/SOLVER_RULES.txt
+- docs/BLENDER_LEGACY.txt
+- docs/TECHNICAL_GUIDE.txt
+- docs/PROJECT_STATUS.txt
+- docs/GITHUB_PUBLISH.txt
+
+COMANDOS
+--------
+furnfact demo --content books
+furnfact generate --input examples/books_balanced.json --output outputs/books_bundle.json
+furnfact render --input examples/books_balanced.json --output-dir outputs/render_books --mode all
+furnfact schema
+furnfact docs
+furnfact template
+furnfact helptext
+furnfact gui
+
+BUILD
+-----
+pip install -e .[desktop,build,dev]
+pytest
+pyinstaller --clean dela-furnfact.spec
+
+COMPATIBILIDAD LEGACY
+---------------------
+Visual legacy:
+- sobre todo 1 o 2 columnas
+
+Fabricación legacy:
+- caso clásico de 2 columnas
+- divisor central
+- trasera partida
+
+Si el proyecto no encaja, la app lo bloquea antes de lanzar Blender.
+
+RESUMEN
+-------
+dela-furnfact ya no es un conjunto de scripts sueltos. Es una base de producto
+con dominio único, solver, fabricación, kerf, GUI, CLI y salida a Blender
+legacy cuando procede.
+
+
+RELEASE Y PUBLICACION
+
+El repositorio incluye:
+- CHANGELOG.md
+- RELEASE_NOTES_v0.4.0.md
+- LICENSE.txt
+- CONTRIBUTING.md
+- CODE_OF_CONDUCT.md
+- SECURITY.md
+- .github/workflows/ci.yml
+- docs/RELEASE_PLAYBOOK.md
+- docs/RELEASE_CHECKLIST.md
+- docs/INSTALL_WINDOWS.md
+- docs/TEST_MATRIX.md
+- ALL_DOCS.md
+- ALL_DOCS.txt
+
+Nota:
+La build Windows real y la validacion final con Blender siguen siendo pasos manuales.
+
+
+================================================================================
+
+FILE: docs/README.txt
+
+================================================================================
+
+Índice de documentación
+
+- `TECHNICAL_GUIDE.md`: guía técnica completa del proyecto.
+- `REQUEST_FORMAT.md`: contrato JSON final.
+- `SOLVER_RULES.md`: cómo toma decisiones el solver.
+- `BLENDER_LEGACY.md`: integración y límites del pipeline heredado.
+- `kerf.md`: kerf como parte del dominio.
+- `product.md`: definición de producto y origen de la fusión.
+- `migration.md`: visión de migración desde los repos fuente.
+- `PROJECT_STATUS.md`: estado actual por fases.
+- `BUILD_WINDOWS.md`: build `.exe`.
+- `GITHUB_PUBLISH.md`: publicación en GitHub.
+
+
+RELEASE DOCS
+- RELEASE_PLAYBOOK.md
+- RELEASE_CHECKLIST.md
+- INSTALL_WINDOWS.md
+- TEST_MATRIX.md
+
+COMBINED PACK
+- ../ALL_DOCS.md
+- ../ALL_DOCS.txt
+
+
+================================================================================
+
+FILE: docs/TECHNICAL_GUIDE.txt
+
+================================================================================
+
+Guía técnica de `dela-furnfact`
+
+#1. Resumen técnico
+
+`dela-furnfact` es un generador paramétrico de estanterías con cuatro capas:
+- entrada (`ShelfRequest`)
+- resolución geométrica (`ShelfPlanner`)
+- fabricación (`ManufacturingGenerator`)
+- layout de corte (`SimpleBoardLayouter`)
+
+El resultado es un `ProjectBundle` que sirve a la vez para:
+- export JSON
+- GUI/CLI
+- bridge hacia Blender legacy
+
+#2. Fuente única de verdad
+
+La fuente única del sistema es `ShelfRequest`.
+Todo sale de ahí:
+- validación
+- solver
+- fabricación
+- kerf
+- render legacy
+
+Esto evita el problema original de tener:
+- un spec visual por un lado
+- scripts kerf hardcodeados por otro
+
+#3. Modelos principales
+
+##`OpeningRequest`
+Describe una necesidad de hueco:
+- etiqueta
+- cantidad
+- altura mínima
+- altura preferida
+- altura máxima opcional
+- anchura mínima opcional
+- prioridad
+- altura fija sí/no
+
+##`ShelfRequest`
+Describe todo el mueble:
+- dimensiones exteriores
+- espesores
+- perfil de contenido
+- modo de layout
+- restricciones globales
+- kerf
+- lista de `requested_openings`
+
+##`ShelfPlan`
+Solución geométrica elegida por el solver:
+- columnas
+- filas
+- ancho útil por sección
+- alto útil por fila
+- huecos resueltos
+- capacidad estimada
+- warnings
+
+##`ManufacturingPlan`
+Resultado de fabricación:
+- piezas
+- tableros
+- placements
+- kerf usado
+
+##`ProjectBundle`
+Estructura final exportable del proyecto.
+
+#4. Módulos
+
+##`models.py`
+Dominio y dataclasses.
+
+##`validation.py`
+Parsing y validación del request.
+También construye errores agregados amigables para GUI/CLI.
+
+##`profiles.py`
+Reglas de negocio por tipo de almacenamiento.
+
+##`solver.py`
+- genera candidatos
+- rellena huecos automáticos si procede
+- respeta restricciones
+- calcula score
+- elige mejor solución
+
+##`manufacturing.py`
+Convierte el plan geométrico en piezas reales.
+
+##`layout.py`
+Hace el packing en tableros con kerf.
+
+##`blender_adapter.py`
+Puente con scripts legacy:
+- detección de Blender
+- compatibilidad previa
+- payloads
+- ejecución
+
+#5. Reglas prácticas del solver
+
+El solver trabaja por candidatos `columnas x filas`.
+
+Para cada candidato:
+1. expande huecos pedidos
+2. completa huecos si falta y `allow_auto_fill` es `true`
+3. comprueba anchura útil
+4. calcula altura útil disponible
+5. asigna alturas objetivo
+6. si no cabe, reduce primero huecos menos prioritarios
+7. respeta límites fijos y máximos
+8. reparte sobrante según `remaining_distribution`
+9. calcula score
+
+#6. Kerf
+
+El kerf forma parte del núcleo:
+- entra desde `ShelfRequest.kerf_mm`
+- se usa en `SimpleBoardLayouter`
+- afecta al espacio entre piezas
+- altera el aprovechamiento total del tablero
+
+#7. Legacy
+
+Los scripts en `legacy/` no son el motor principal.
+Se conservan para:
+- compatibilidad
+- comparación
+- soporte de render
+
+El producto nuevo no depende conceptualmente de esos scripts para definir el mueble.
+
+#8. Build de escritorio
+
+- GUI principal: PySide6
+- empaquetado: PyInstaller
+- recursos incluidos: `schemas`, `examples`, `assets`, `docs`, `legacy`
+
+#9. Testing
+
+Los tests actuales cubren:
+- pipeline books
+- pipeline dvd
+- huecos personalizados
+- validación
+- payloads legacy
+- restricciones `fixed_height`
+- prioridades
+- carga de requests JSON
+
+#10. Siguiente foco técnico
+
+Lo pendiente ya no es rehacer arquitectura. Lo pendiente es:
+- validar en Windows real
+- ampliar casos comerciales
+- decidir si el legado sigue o se sustituye por render nativo nuevo
+
+
+================================================================================
+
+FILE: docs/REQUEST_FORMAT.txt
+
+================================================================================
+
+Formato del request JSON
+
+#Estructura general
+
+```json
+{
+  "name": "Proyecto DELA",
+  "width_mm": 1800,
+  "height_mm": 2200,
+  "depth_mm": 320,
+  "board_thickness_mm": 18,
+  "back_panel_thickness_mm": 5,
+  "content_type": "books",
+  "content_quantity": 240,
+  "layout_mode": "balanced",
+  "remaining_distribution": "uniform",
+  "has_back_panel": true,
+  "split_back_panel": true,
+  "has_center_divider": true,
+  "kerf_mm": 3,
+  "units": "mm",
+  "fixed_columns": 2,
+  "fixed_rows": null,
+  "allow_auto_fill": true,
+  "requested_openings": []
+}
+```
+
+#Campos de raíz
+
+- `name`: nombre del proyecto.
+- `width_mm`: ancho exterior total.
+- `height_mm`: alto exterior total.
+- `depth_mm`: fondo exterior total.
+- `board_thickness_mm`: grosor del tablero principal.
+- `back_panel_thickness_mm`: grosor de la trasera.
+- `content_type`: `books` o `dvd`.
+- `content_quantity`: cantidad objetivo aproximada.
+- `layout_mode`: `auto`, `balanced`, `dense`.
+- `remaining_distribution`: `auto`, `uniform`, `top_bottom_large`, `largest_openings`, `none`.
+- `has_back_panel`: incluye trasera.
+- `split_back_panel`: parte la trasera.
+- `has_center_divider`: permite divisor central.
+- `kerf_mm`: pérdida de corte.
+- `units`: actualmente solo `mm`.
+- `fixed_columns`: bloquea número de columnas.
+- `fixed_rows`: bloquea número de filas.
+- `allow_auto_fill`: deja al solver completar huecos faltantes.
+- `requested_openings`: lista de huecos específicos.
+
+#Campos de `requested_openings`
+
+- `label`: nombre del hueco.
+- `count`: cuántas veces se repite.
+- `min_clear_height_mm`: altura útil mínima obligatoria.
+- `preferred_clear_height_mm`: altura objetivo preferida.
+- `max_clear_height_mm`: altura útil máxima opcional.
+- `min_clear_width_mm`: anchura útil mínima.
+- `priority`: `1` más importante, `5` menos importante.
+- `fixed_height`: si es `true`, el solver trata esa altura como fija.
+
+#Interpretación práctica
+
+##Caso 1: hueco flexible
+```json
+{
+  "label": "novela",
+  "count": 4,
+  "min_clear_height_mm": 230,
+  "preferred_clear_height_mm": 255,
+  "max_clear_height_mm": 270,
+  "priority": 4,
+  "fixed_height": false
+}
+```
+
+##Caso 2: hueco fijo
+```json
+{
+  "label": "arte_grande",
+  "count": 1,
+  "min_clear_height_mm": 360,
+  "preferred_clear_height_mm": 390,
+  "max_clear_height_mm": 390,
+  "priority": 1,
+  "fixed_height": true
+}
+```
+
+#Recomendaciones
+
+- usa `preferred_clear_height_mm` siempre que quieras guiar al solver
+- usa `fixed_height` solo para huecos realmente rígidos
+- usa `fixed_columns` y `fixed_rows` solo cuando necesites bloquear la solución
+- si el usuario no define todos los huecos, deja `allow_auto_fill = true`
+
+#Ejemplos
+
+- `examples/books_balanced.json`
+- `examples/dvd_dense.json`
+- `examples/custom_spaces.json`
+
+
+================================================================================
+
+FILE: docs/SOLVER_RULES.txt
+
+================================================================================
+
+Reglas del solver
+
+#Prioridad
+
+La prioridad se interpreta así:
+- `1`: máxima prioridad
+- `5`: mínima prioridad
+
+Cuando no caben todas las alturas preferidas:
+- el solver reduce antes los huecos de prioridad alta numérica
+- intenta preservar primero `priority=1`, luego `2`, etc.
+
+#`fixed_height`
+
+Si `fixed_height` es `true`:
+- el hueco exige una altura fija efectiva
+- normalmente debe venir acompañada de `preferred_clear_height_mm`
+- el solver intenta mantener esa altura exacta
+
+Si la geometría no lo permite:
+- el request puede fallar
+- o el candidato se descarta
+
+#`max_clear_height_mm`
+
+Limita el crecimiento del hueco.
+Se usa sobre todo cuando:
+- quieres que un hueco no absorba todo el sobrante
+- quieres mantener una estética o uso concreto
+
+#`allow_auto_fill`
+
+Si es `true`:
+- el solver puede crear huecos automáticos cuando faltan huecos para completar filas x columnas
+
+Si es `false`:
+- el número de huecos pedidos debe cuadrar con la topología resuelta o con las restricciones fijas
+
+#`fixed_columns` y `fixed_rows`
+
+- bloquean el espacio de búsqueda del solver
+- hacen la solución más predecible
+- también aumentan el riesgo de incompatibilidad si el usuario pide algo que no cabe
+
+#`remaining_distribution`
+
+Controla cómo se reparte el sobrante una vez respetados mínimos y objetivos:
+- `uniform`: reparte homogéneamente
+- `top_bottom_large`: favorece extremos
+- `largest_openings`: empuja más a los huecos mayores
+- `none`: no reparte sobrante adicional
+
+#Casos típicos
+
+##Biblioteca con hueco protagonista
+- un hueco grande fijo para arte o atlas
+- varios huecos flexibles para novela
+- prioridad alta en el hueco protagonista
+
+##DVD denso
+- muchas filas
+- alturas bajas
+- layout mode `dense`
+
+##Mixto con reglas del usuario
+- unas filas fijas
+- otras automáticas
+- alturas máximas para controlar crecimiento
+
+#Qué no hace todavía
+
+El solver actual no intenta:
+- optimización multiobjetivo avanzada
+- coste económico real
+- deformación estructural detallada por carga
+- CNC/toolpath
+
+
+================================================================================
+
+FILE: docs/BLENDER_LEGACY.txt
+
+================================================================================
+
+Blender legacy
+
+#Qué es
+
+`dela-furnfact` puede seguir usando los scripts heredados de Blender para:
+- render visual
+- render técnico de fabricación
+
+Esa integración vive en `src/dela_furnfact/blender_adapter.py`.
+
+#Qué se valida antes de renderizar
+
+El bridge no lanza Blender a ciegas.
+Antes genera un `LegacyCompatibilityReport`.
+
+Hay dos chequeos:
+- compatibilidad visual
+- compatibilidad de fabricación
+
+#Compatibilidad visual
+
+Soporta mejor:
+- 1 columna
+- 2 columnas
+- huecos mapeables a tipos legacy
+
+Los labels nuevos pueden mapearse a:
+- `books_small`
+- `books_large`
+- `books_standard`
+- `books_general`
+- `dvds`
+- `dvd_boxsets`
+
+#Compatibilidad de fabricación
+
+El pipeline heredado de fabricación sigue ligado a la topología clásica:
+- 2 columnas
+- divisor central
+- trasera partida
+- layout simétrico de estantería
+
+Si el proyecto no encaja, se bloquea el render de fabricación legacy.
+
+#Archivos legacy conservados
+
+- `legacy/blender/generate_bookshelf.py`
+- `legacy/blender/generate_kerf_layout.py`
+- `legacy/scripts/kerf_estanteria_dvds.py`
+- `legacy/scripts/kerf_estanteria_libros_4_4.py`
+- `legacy/scripts/kerf_estanteria_libros_5_3.py`
+
+#Cuándo usar Blender legacy
+
+Úsalo cuando quieras:
+- render rápido reutilizando lo existente
+- comprobar continuidad con el proyecto anterior
+- mantener outputs conocidos
+
+#Cuándo no usarlo como núcleo
+
+No debe ser el motor principal para:
+- definir la lógica del mueble
+- decidir topologías nuevas
+- modelar casos que el legado no soporta
+
+
+================================================================================
+
+FILE: docs/PROJECT_STATUS.txt
+
+================================================================================
+
+Estado del proyecto
+
+#Fase 1 cerrada
+- bridge entre modelo nuevo y Blender legacy
+- compatibilidad visual y de fabricación
+- bloqueo preventivo de renders engañosos
+
+#Fase 2 cerrada
+- `fixed_height`
+- `max_clear_height_mm`
+- prioridades reales
+- validación reforzada
+- soporte en GUI y schema
+
+#Fase 3 cerrada
+- documentación técnica completa
+- formato JSON explicado
+- reglas del solver documentadas
+- bridge legacy documentado
+- ayuda integrada en CLI y GUI
+- repo limpio para GitHub
+
+#Qué queda ahora
+
+Lo que queda ya no es rehacer la base. Lo que queda es:
+- validar build Windows en máquina real
+- probar con usuarios/casos comerciales reales
+- ampliar compatibilidad Blender si hace falta
+- decidir branding y release pública
+
+
+================================================================================
+
+FILE: docs/GITHUB_PUBLISH.txt
+
+================================================================================
+
+PUBLICAR DELA-FURNFACT EN GITHUB
+=================================
+
+1. Crear un repo nuevo en GitHub llamado:
+   dela-furnfact
+
+2. No añadir README ni gitignore desde la web si ya vas a subir este proyecto.
+
+3. Desde la raíz local ejecutar:
+
+   git init
+   git add .
+   git commit -m "Initial commit: dela-furnfact"
+   git branch -M main
+
+4. Conectar con GitHub:
+
+   git remote add origin https://github.com/TU_USUARIO/dela-furnfact.git
+   git push -u origin main
+
+5. No subir:
+   - .venv/
+   - dist/
+   - build/
+   - outputs/
+   - __pycache__/
+   - .pytest_cache/
+
+6. Para sacar una release:
+   git tag v0.2.0
+   git push origin v0.2.0
+
+7. Para publicar el ejecutable:
+   - ejecutar scripts\build_windows.bat o .\scripts\build_windows.ps1
+   - comprimir dist\dela-furnfact\
+   - subir el zip a GitHub Releases
+
+
+LO QUE YA VA INCLUIDO EN EL REPO FINAL
+
+- .github/workflows/ci.yml
+- .github/ISSUE_TEMPLATE/*
+- .github/pull_request_template.md
+- CHANGELOG.md
+- RELEASE_NOTES_v0.4.0.md
+- CONTRIBUTING.md
+- CODE_OF_CONDUCT.md
+- SECURITY.md
+
+
+================================================================================
+
+FILE: docs/RELEASE_PLAYBOOK.txt
+
+================================================================================
+
+RELEASE PLAYBOOK
+
+Goal
+Publish a clean GitHub repository and create a first usable Windows build.
+
+Pre-release checks
+1. Run pytest.
+2. Run furnfact demo --content books.
+3. Run furnfact demo --content dvd.
+4. Run furnfact doctor.
+5. If Blender is installed, run visual and manufacturing renders from the examples.
+
+Windows packaging
+1. Use a real Windows machine.
+2. Install Python 3.11 or 3.12.
+3. Create a virtual environment.
+4. Install: pip install -e .[desktop,build,dev]
+5. Run pytest.
+6. Run: pyinstaller --clean dela-furnfact.spec
+7. Test the generated exe.
+
+GitHub release
+1. Push main.
+2. Create tag v0.4.0.
+3. Create a release using RELEASE_NOTES_v0.4.0.md.
+4. Upload the Windows build zip.
+
+
+================================================================================
+
+FILE: docs/RELEASE_CHECKLIST.txt
+
+================================================================================
+
+RELEASE CHECKLIST
+
+- pytest passes locally
+- furnfact doctor passes
+- examples generate bundles
+- docs reviewed
+- version updated
+- changelog updated
+- release notes reviewed
+- Windows build tested manually
+- Blender tested manually on a machine with Blender installed
+- GitHub repository created
+- secrets and private files removed
+- license choice confirmed
+- tag created
+- release uploaded
+
+
+================================================================================
+
+FILE: docs/INSTALL_WINDOWS.txt
+
+================================================================================
+
+WINDOWS INSTALLATION
+
+Source mode
+1. Install Python 3.11 or 3.12.
+2. Create a virtual environment.
+3. Install dependencies with:
+   pip install -e .[desktop,build,dev]
+4. Run:
+   furnfact gui
+
+EXE mode
+1. Download the release zip from GitHub Releases.
+2. Extract it.
+3. Open dela-furnfact.exe.
+4. Configure Blender manually if you need rendering.
+
+Troubleshooting
+- Confirm PySide6 is installed in source mode.
+- Configure Blender path manually if autodetection fails.
+- Check write permissions on the output directory.
+
+
+================================================================================
+
+FILE: docs/TEST_MATRIX.txt
+
+================================================================================
+
+TEST MATRIX
+
+Automated
+- pytest unit and smoke tests
+- bundle generation
+- JSON load/save
+- Blender compatibility checks
+- CLI smoke commands
+
+Manual on Windows
+- GUI startup
+- PyInstaller executable startup
+- docs opening from packaged app
+- render output directory creation
+
+Manual with Blender installed
+- visual render
+- manufacturing render
+- full render batch

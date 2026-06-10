@@ -1,0 +1,20 @@
+WINDOWS INSTALLATION
+
+Source mode
+1. Install Python 3.11 or 3.12.
+2. Create a virtual environment.
+3. Install dependencies with:
+   pip install -e .[desktop,build,dev]
+4. Run:
+   furnfact gui
+
+EXE mode
+1. Download the release zip from GitHub Releases.
+2. Extract it.
+3. Open dela-furnfact.exe.
+4. Configure Blender manually if you need rendering.
+
+Troubleshooting
+- Confirm PySide6 is installed in source mode.
+- Configure Blender path manually if autodetection fails.
+- Check write permissions on the output directory.

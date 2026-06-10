@@ -1,0 +1,18 @@
+DELA FurnFact License Status
+
+Copyright (c) 2026
+
+All rights reserved.
+
+This repository is delivered with a default "all rights reserved" status until the owner
+replaces this file with the final license choice.
+
+What this means:
+- You may read the source code hosted in the repository.
+- You may not copy, redistribute, sublicense, or commercialize the code unless the owner grants permission.
+- If you want an open-source release, replace this file before publishing with the chosen license text
+  such as MIT, Apache-2.0, or GPL-3.0.
+
+Important:
+This file is intentionally conservative so the project can be uploaded to GitHub without making
+an accidental legal choice on behalf of the owner.

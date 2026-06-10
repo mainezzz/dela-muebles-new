@@ -1,0 +1,16 @@
+RELEASE CHECKLIST
+
+- pytest passes locally
+- furnfact doctor passes
+- examples generate bundles
+- docs reviewed
+- version updated
+- changelog updated
+- release notes reviewed
+- Windows build tested manually
+- Blender tested manually on a machine with Blender installed
+- GitHub repository created
+- secrets and private files removed
+- license choice confirmed
+- tag created
+- release uploaded

@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ShelfRequest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "width_mm",
+    "height_mm",
+    "depth_mm",
+    "content_type"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "width_mm": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "height_mm": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "depth_mm": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "board_thickness_mm": {
+      "type": "number",
+      "exclusiveMinimum": 0
+    },
+    "back_panel_thickness_mm": {
+      "type": "number",
+      "minimum": 0
+    },
+    "content_type": {
+      "type": "string",
+      "enum": [
+        "books",
+        "dvd"
+      ]
+    },
+    "content_quantity": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "layout_mode": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "balanced",
+        "dense"
+      ]
+    },
+    "remaining_distribution": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "uniform",
+        "top_bottom_large",
+        "largest_openings",
+        "none"
+      ]
+    },
+    "has_back_panel": {
+      "type": "boolean"
+    },
+    "split_back_panel": {
+      "type": "boolean"
+    },
+    "has_center_divider": {
+      "type": "boolean"
+    },
+    "kerf_mm": {
+      "type": "number",
+      "minimum": 0
+    },
+    "units": {
+      "type": "string",
+      "enum": [
+        "mm"
+      ]
+    },
+    "fixed_columns": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "fixed_rows": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "allow_auto_fill": {
+      "type": "boolean"
+    },
+    "requested_openings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "label",
+          "count",
+          "min_clear_height_mm"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "count": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "min_clear_height_mm": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "preferred_clear_height_mm": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "min_clear_width_mm": {
+            "type": "number",
+            "minimum": 0
+          },
+          "priority": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "max_clear_height_mm": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "fixed_height": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}

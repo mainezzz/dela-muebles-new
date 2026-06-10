@@ -1,0 +1,2 @@
+graft src/dela_furnfact/resources
+include README.md README.txt ARCHITECTURE.md pyproject.toml dela-furnfact.spec

@@ -1,0 +1,38 @@
+{
+  "name": "Estantería DVD",
+  "width_mm": 2036.0,
+  "height_mm": 2000.0,
+  "depth_mm": 200.0,
+  "board_thickness_mm": 18.0,
+  "back_panel_thickness_mm": 5.0,
+  "content_type": "dvd",
+  "content_quantity": 400,
+  "layout_mode": "dense",
+  "remaining_distribution": "top_bottom_large",
+  "has_back_panel": true,
+  "split_back_panel": true,
+  "has_center_divider": true,
+  "kerf_mm": 3.0,
+  "units": "mm",
+  "fixed_columns": 2,
+  "requested_openings": [
+    {
+      "label": "dvd_boxsets",
+      "count": 1,
+      "min_clear_height_mm": 255.0,
+      "preferred_clear_height_mm": 255.0
+    },
+    {
+      "label": "dvds",
+      "count": 6,
+      "min_clear_height_mm": 205.0,
+      "preferred_clear_height_mm": 205.0
+    },
+    {
+      "label": "dvd_boxsets",
+      "count": 1,
+      "min_clear_height_mm": 255.0,
+      "preferred_clear_height_mm": 255.0
+    }
+  ]
+}

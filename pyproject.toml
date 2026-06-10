@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dela-furnfact"
+version = "0.4.0"
+description = "Configurador de estanterías DELA con solver paramétrico, fabricación, kerf, CLI y GUI PySide6."
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [{ name = "mainezzz" }]
+license = { file = "LICENSE.txt" }
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/mainezzz/dela-muebles-factory"
+Repository = "https://github.com/mainezzz/dela-muebles-factory"
+Issues = "https://github.com/mainezzz/dela-muebles-factory/issues"
+
+[project.optional-dependencies]
+desktop = ["PySide6>=6.7"]
+build = ["PyInstaller>=6.10"]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+furnfact = "dela_furnfact.cli:main"
+
+[project.gui-scripts]
+furnfact-gui = "dela_furnfact.gui:launch_gui"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+dela_furnfact = [
+  "resources/schemas/*",
+  "resources/examples/*",
+  "resources/assets/*",
+  "resources/assets/*/*",
+  "resources/assets/*/*/*",
+  "resources/docs/*",
+  "resources/docs/*/*",
+  "resources/docs/*/*/*",
+  "resources/legacy/*",
+  "resources/legacy/*/*",
+  "resources/legacy/*/*/*",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
