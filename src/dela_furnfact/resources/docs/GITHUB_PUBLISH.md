@@ -1,11 +1,11 @@
-# Publicar `dela-muebles-factory` en GitHub
+# Publicar `dela-muebles-new` en GitHub
 
 ## 1. Crear el repositorio remoto
 
 En GitHub crea un repositorio nuevo llamado:
 
 ```text
-dela-muebles-factory
+dela-muebles-new
 ```
 
 No añadas README ni `.gitignore` desde la web si ya vas a subir este proyecto completo.
@@ -17,7 +17,7 @@ Desde la raíz del proyecto:
 ```bash
 git init
 git add .
-git commit -m "Initial commit: dela-muebles-factory"
+git commit -m "Initial commit: dela-muebles-new"
 git branch -M main
 ```
 
@@ -26,7 +26,7 @@ git branch -M main
 Sustituye `TU_USUARIO` por tu cuenta:
 
 ```bash
-git remote add origin https://github.com/TU_USUARIO/dela-muebles-factory.git
+git remote add origin https://github.com/TU_USUARIO/dela-muebles-new.git
 git push -u origin main
 ```
 
@@ -65,7 +65,7 @@ git push
 ## 7. Primera release Windows
 
 1. Ejecuta `scripts/build_windows.ps1`
-2. Comprime `dist/dela-muebles-factory/`
+2. Comprime `dist/dela-muebles-new/`
 3. Sube el `.zip` como Release en GitHub
 4. Añade notas de versión:
    - GUI PySide6
@@ -96,3 +96,4 @@ git push
 - `CONTRIBUTING.md`
 - `CODE_OF_CONDUCT.md`
 - `SECURITY.md`
+
