@@ -4,9 +4,9 @@ PUBLICAR DELA-MUEBLES-NEW EN GITHUB
 1. Crear un repo nuevo en GitHub llamado:
    dela-muebles-new
 
-2. No aÃ±adir README ni gitignore desde la web si ya vas a subir este proyecto.
+2. No aÃƒÂ±adir README ni gitignore desde la web si ya vas a subir este proyecto.
 
-3. Desde la raÃ­z local ejecutar:
+3. Desde la raÃƒÂ­z local ejecutar:
 
    git init
    git add .
