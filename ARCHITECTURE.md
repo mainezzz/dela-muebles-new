@@ -149,9 +149,9 @@ Responsabilidades:
 Archivos:
 - `src/dela_furnfact/cli.py`
 - `src/dela_furnfact/ui/pyside_app.py`
-- `src/dela_furnfact/ui/tk_app.py`
+- `src/dela_furnfact/ui/tk_app.py` (legacy, no usado por el entrypoint principal)
 
-La GUI principal es PySide6. La de Tkinter queda como fallback ligero.
+La GUI principal es PySide6. La implementación de Tkinter queda como legacy y no forma parte del entrypoint soportado.
 
 ## IntegraciÃ³n con legado
 
