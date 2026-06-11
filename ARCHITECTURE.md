@@ -4,40 +4,40 @@
 
 `dela-muebles-new` es la arquitectura final del producto DELA y resulta de fusionar:
 
-- la capacidad real de render y fabricaciÃƒÂ³n del repo original de Blender
+- la capacidad real de render y fabricaciÃ³n del repo original de Blender
 - la arquitectura de dominio/solver del repo orientado a producto
 
-El resultado es una base ÃƒÂºnica para:
+El resultado es una base Ãºnica para:
 - CLI
 - GUI de escritorio
-- generaciÃƒÂ³n de bundles JSON
-- fabricaciÃƒÂ³n con kerf
-- integraciÃƒÂ³n opcional con Blender legacy
+- generaciÃ³n de bundles JSON
+- fabricaciÃ³n con kerf
+- integraciÃ³n opcional con Blender legacy
 - empaquetado como `.exe`
 
 ## Pipeline principal
 
 ```text
 ShelfRequest
-Ã¢â€ â€œ
+â†“
 parse_request_dict / load_request
-Ã¢â€ â€œ
+â†“
 validate_request
-Ã¢â€ â€œ
+â†“
 get_profile
-Ã¢â€ â€œ
+â†“
 ShelfPlanner.solve
-Ã¢â€ â€œ
+â†“
 ShelfPlan
-Ã¢â€ â€œ
+â†“
 ManufacturingGenerator.build_parts
-Ã¢â€ â€œ
+â†“
 SimpleBoardLayouter.layout
-Ã¢â€ â€œ
+â†“
 ManufacturingPlan
-Ã¢â€ â€œ
+â†“
 ProjectBundle
-Ã¢â€ â€œ
+â†“
 JsonExporter / CLI / GUI / LegacyBlenderBridge
 ```
 
@@ -59,17 +59,17 @@ Contiene los value objects y modelos principales:
 - `ManufacturingPlan`
 - `ProjectBundle`
 
-Es la fuente ÃƒÂºnica de verdad del sistema.
+Es la fuente Ãºnica de verdad del sistema.
 
-### ValidaciÃƒÂ³n
+### ValidaciÃ³n
 Archivo: `src/dela_furnfact/validation.py`
 
 Responsabilidades:
 - parsear JSON/dict
 - convertir strings a enums
 - validar magnitudes
-- validar coherencia semÃƒÂ¡ntica mÃƒÂ­nima
-- bloquear requests fÃƒÂ­sicamente inviables
+- validar coherencia semÃ¡ntica mÃ­nima
+- bloquear requests fÃ­sicamente inviables
 - devolver errores agregados y warnings
 
 ### Reglas de perfil
@@ -80,25 +80,25 @@ Define perfiles de almacenamiento:
 - `dvd`
 
 Cada perfil modela:
-- profundidad mÃƒÂ­nima e ideal
-- altura mÃƒÂ­nima e ideal
+- profundidad mÃ­nima e ideal
+- altura mÃ­nima e ideal
 - ancho por unidad
-- nÃƒÂºmero de columnas/filas candidatas
-- luz mÃƒÂ¡xima recomendada
+- nÃºmero de columnas/filas candidatas
+- luz mÃ¡xima recomendada
 
 ### Solver
 Archivo: `src/dela_furnfact/solver.py`
 
 Responsabilidades:
 - expandir huecos solicitados
-- completar huecos automÃƒÂ¡ticos cuando procede
+- completar huecos automÃ¡ticos cuando procede
 - generar candidatos por filas/columnas
 - respetar restricciones fijas
 - reducir alturas primero en huecos menos prioritarios
 - respetar `fixed_height` y `max_clear_height_mm`
-- hacer scoring y elegir la mejor soluciÃƒÂ³n
+- hacer scoring y elegir la mejor soluciÃ³n
 
-### FabricaciÃƒÂ³n
+### FabricaciÃ³n
 Archivo: `src/dela_furnfact/manufacturing.py`
 
 Convierte un `ShelfPlan` en piezas fabricables:
@@ -113,29 +113,29 @@ Convierte un `ShelfPlan` en piezas fabricables:
 Archivo: `src/dela_furnfact/layout.py`
 
 Implementa un shelf packing estable:
-- expansiÃƒÂ³n por cantidad
-- agrupaciÃƒÂ³n por material
-- elecciÃƒÂ³n de stock board segÃƒÂºn material y longitud mÃƒÂ¡xima
-- colocaciÃƒÂ³n con kerf
-- rotaciÃƒÂ³n opcional cuando ayuda a encajar la pieza
+- expansiÃ³n por cantidad
+- agrupaciÃ³n por material
+- elecciÃ³n de stock board segÃºn material y longitud mÃ¡xima
+- colocaciÃ³n con kerf
+- rotaciÃ³n opcional cuando ayuda a encajar la pieza
 
-### OrquestaciÃƒÂ³n
+### OrquestaciÃ³n
 Archivo: `src/dela_furnfact/application.py`
 
 Une:
-- validaciÃƒÂ³n
+- validaciÃ³n
 - solver
-- fabricaciÃƒÂ³n
+- fabricaciÃ³n
 - layout
 
-y devuelve un ÃƒÂºnico `ProjectBundle`.
+y devuelve un Ãºnico `ProjectBundle`.
 
-### ExportaciÃƒÂ³n
+### ExportaciÃ³n
 Archivo: `src/dela_furnfact/exporters.py`
 
 Exporta el `ProjectBundle` a JSON.
 
-### IntegraciÃƒÂ³n Blender
+### IntegraciÃ³n Blender
 Archivo: `src/dela_furnfact/blender_adapter.py`
 
 Responsabilidades:
@@ -151,26 +151,26 @@ Archivos:
 - `src/dela_furnfact/ui/pyside_app.py`
 - `src/dela_furnfact/ui/tk_app.py` (legacy, no usado por el entrypoint principal)
 
-La GUI principal es PySide6. La implementaciÃ³n de Tkinter queda como legacy y no forma parte del entrypoint soportado.
+La GUI principal es PySide6. La implementación de Tkinter queda como legacy y no forma parte del entrypoint soportado.
 
-## IntegraciÃƒÂ³n con legado
+## IntegraciÃ³n con legado
 
 La carpeta `legacy/` conserva:
 - scripts Blender originales
 - scripts de kerf por variante
-- ejemplos histÃƒÂ³ricos
+- ejemplos histÃ³ricos
 
-Esos archivos no son el nÃƒÂºcleo del producto. Se conservan como:
+Esos archivos no son el nÃºcleo del producto. Se conservan como:
 - referencia
 - compatibilidad
-- transiciÃƒÂ³n controlada
+- transiciÃ³n controlada
 
 ## Datos de apoyo
 
 - `schemas/shelf_request.schema.json`: contrato JSON de entrada.
 - `examples/`: ejemplos del modelo nuevo.
-- `assets/`: materiales e imÃƒÂ¡genes.
-- `docs/`: documentaciÃƒÂ³n tÃƒÂ©cnica y de producto.
+- `assets/`: materiales e imÃ¡genes.
+- `docs/`: documentaciÃ³n tÃ©cnica y de producto.
 
 ## Flujo GUI/CLI
 
@@ -185,10 +185,10 @@ Esos archivos no son el nÃƒÂºcleo del producto. Se conservan como:
 - `gui`
 
 ### GUI
-- ediciÃƒÂ³n de request
+- ediciÃ³n de request
 - tabla de huecos
 - resumen del bundle
-- preview esquemÃƒÂ¡tica
+- preview esquemÃ¡tica
 - piezas y tableros
 - ayuda integrada
 - render Blender con logs
@@ -197,10 +197,10 @@ Esos archivos no son el nÃƒÂºcleo del producto. Se conservan como:
 
 Cerrado:
 - fase 1: bridge legacy robusto
-- fase 2: solver con prioridades/fijos/mÃƒÂ¡ximos
+- fase 2: solver con prioridades/fijos/mÃ¡ximos
 - fase 3: docs, request final documentado, ayuda integrada y repo listo para GitHub
 
 Pendiente:
-- validaciÃƒÂ³n de builds Windows reales
+- validaciÃ³n de builds Windows reales
 - refinamiento de solver en casos comerciales nuevos
-- ampliaciÃƒÂ³n del bridge legacy si se soportan topologÃƒÂ­as no clÃƒÂ¡sicas
+- ampliaciÃ³n del bridge legacy si se soportan topologÃ­as no clÃ¡sicas

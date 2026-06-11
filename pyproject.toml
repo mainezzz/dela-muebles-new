@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "dela-furnfact"
 version = "0.4.0"
-description = "Configurador de estanterÃ­as DELA con solver paramÃ©trico, fabricaciÃ³n, kerf, CLI y GUI PySide6."
+description = "Configurador de estanterías DELA con solver paramétrico, fabricación, kerf, CLI y GUI PySide6."
 readme = "README.md"
 requires-python = ">=3.11"
 authors = [{ name = "mainezzz" }]
