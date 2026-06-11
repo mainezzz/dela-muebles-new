@@ -1,2 +1,2 @@
-﻿# prueba
+# prueba
 texto de prueba

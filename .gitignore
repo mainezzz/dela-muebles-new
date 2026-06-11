@@ -9,7 +9,3 @@ __pycache__/
 *.pyd
 *.egg-info/
 .venv-wheeltest/
-build/
-dist/
-.pytest_cache/
-*.egg-info/
