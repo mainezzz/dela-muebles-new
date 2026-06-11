@@ -2,20 +2,20 @@ PUBLICAR DELA-FURNFACT EN GITHUB
 =================================
 
 1. Crear un repo nuevo en GitHub llamado:
-   dela-muebles-factory
+   dela-muebles-new
 
-2. No añadir README ni gitignore desde la web si ya vas a subir este proyecto.
+2. No aÃ±adir README ni gitignore desde la web si ya vas a subir este proyecto.
 
-3. Desde la raíz local ejecutar:
+3. Desde la raÃ­z local ejecutar:
 
    git init
    git add .
-   git commit -m "Initial commit: dela-muebles-factory"
+   git commit -m "Initial commit: dela-muebles-new"
    git branch -M main
 
 4. Conectar con GitHub:
 
-   git remote add origin https://github.com/TU_USUARIO/dela-muebles-factory.git
+   git remote add origin https://github.com/TU_USUARIO/dela-muebles-new.git
    git push -u origin main
 
 5. No subir:
@@ -32,7 +32,7 @@ PUBLICAR DELA-FURNFACT EN GITHUB
 
 7. Para publicar el ejecutable:
    - ejecutar scripts\build_windows.bat o .\scripts\build_windows.ps1
-   - comprimir dist\dela-muebles-factory\
+   - comprimir dist\dela-muebles-new\
    - subir el zip a GitHub Releases
 
 
