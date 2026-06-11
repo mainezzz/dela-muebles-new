@@ -1,4 +1,4 @@
-PUBLICAR DELA-FURNFACT EN GITHUB
+PUBLICAR DELA-MUEBLES-NEW EN GITHUB
 =================================
 
 1. Crear un repo nuevo en GitHub llamado:
