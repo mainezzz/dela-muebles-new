@@ -1,4 +1,4 @@
-﻿# dela-muebles-new
+# dela-muebles-new
 
 `dela-muebles-new` es el repositorio final del producto DELA: un configurador de estanterías que transforma **medidas + tipo de contenido + reglas de huecos** en una solución **fabricable**, con **despiece**, **layout de corte con kerf**, **export JSON**, **GUI PySide6** e integración opcional con **Blender legacy**.
 
